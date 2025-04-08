@@ -4,9 +4,13 @@ from .models import *
 from urllib.parse import urlencode
 from datetime import datetime, timedelta
 from . import sql_scripts
+from .Students import Students
 
 
 def index(request):
-    df = sql_scripts.readSQL(sql_scripts.all_people())
-    print(df)
-    return HttpResponse("Hello, world. This is the index page.")
+    S = Students('2024FA')
+    df = sql_scripts.readSQL(S.table())
+    context = {
+        'df': df.to_html(classes='table table-striped table-hover', index=False)
+    }
+    return render(request, 'ipeds/index.html', context)

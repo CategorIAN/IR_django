@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ipeds.apps.IpedsConfig'
 ]
 
 MIDDLEWARE = [
@@ -74,47 +75,15 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-'''
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-print(env('DATABASE_DRIVER'))
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': env('DATABASE_NAME'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT'),
-        'USER': '',
-        'PASSWORD': '',
-        'OPTIONS': {
-            'driver': env('DATABASE_DRIVER'),
-             'extra_params': 'TrustServerCertificate=yes;'
-        }
-    }
-}
-print(DATABASES['default'])
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': '2024FA_SNAPSHOT',
-        'HOST': 'obsidian',
-        'PORT': '1433',
-        'OPTIONS': {
-            'driver': 'ODBC DRIVER 17 for SQL Server',
-            'trusted_connections': True
-        }
-    }
-}
-'''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

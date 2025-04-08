@@ -20,8 +20,7 @@ def all_people():
         return queried_df(cursor, query)
     return execute
 
-
-def readSQL(view):
+def readSQL(query):
     try:
         env = environ.Env()
         environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -33,7 +32,7 @@ def readSQL(view):
         )
         connection = pyodbc.connect(my_str)
         cursor = connection.cursor()
-        return view(cursor)
+        return queried_df(cursor, query)
     except Exception as e:
         print(e)
     finally:
