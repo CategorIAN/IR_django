@@ -9,8 +9,13 @@ from .Students import Students
 
 def index(request):
     S = Students('2024FA')
-    df = sql_scripts.readSQL(S.table())
+    title = "Home"
+    df = sql_scripts.readSQL(S.table(['GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL', 'CIP_CLASS']))
     context = {
+        'title': title,
         'df': df.to_html(classes='table table-striped table-hover', index=False)
     }
-    return render(request, 'ipeds/index.html', context)
+    return render(request, 'ipeds/base.html', context)
+
+def ftug(request):
+    return HttpResponse("<h1>Ftug</h1>")
