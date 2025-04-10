@@ -113,6 +113,7 @@ class Students:
         if feature == 'ACAD_LEVEL': return self.acad_level()
         if feature == 'CIP_CLASS': return self.cip_class()
 
+
     def table(self, features):
         query = f"""
         SELECT ID, 
@@ -122,6 +123,60 @@ class Students:
                     for feature in features])}
         """
         return query
+
+    def filtered(self, x, filter_by):
+        query = f"""
+        SELECT *
+        FROM ({x}) AS STUDENTS
+        WHERE {"\nAND ".join([f"{k} = '{v}'" for k, v in filter_by.items()])}
+        """
+        return query
+
+    def project(self, x, features):
+        query = f"""
+        SELECT {", ".join(features)}
+        FROM ({x}) AS STUDENTS
+        """
+        return query
+
+    def pivoted(self, x, row_feature, col_feature, columns, col_titles = None):
+        col_strs = [f"[{col}]" for col in columns]
+        titles = col_strs if col_titles is None else [f"{col} AS {title}" for col, title in zip(col_strs, col_titles)]
+        query = f"""
+        SELECT {row_feature}, {", ".join(titles)}
+        FROM ({x}) AS STUDENTS PIVOT (COUNT(ID) FOR {col_feature} IN ({", ".join(col_strs)})) AS PIVOTED
+        """
+        return query
+
+    def reordered(self, x, col_feature, ordered_cols):
+        col_ordering = zip(ordered_cols, range(len(ordered_cols)))
+        query = f"""
+        SELECT STUDENTS.*
+        FROM ({x}) AS STUDENTS
+        JOIN (VALUES {",\n".join([f"('{col}', '{order}')" for col, order in col_ordering])}) AS ORDERING(LABEL, N)
+        ON STUDENTS.{col_feature} = ORDERING.LABEL
+        ORDER BY ORDERING.N
+        """
+        return query
+
+    def x(self):
+        table = self.table(['GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL'])
+        filter_by = {'GENDER': 'M', 'LOAD': 'Full-Time', 'ACAD_LEVEL': 'Undergraduate'}
+        features = ['ID', 'RACE', 'STATUS']
+        q1 = self.project(self.filtered(table, filter_by), features)
+        pivot_columns = ['First-time', 'Transfer-in', 'Continuing/Returning', 'Non-Degree Seeking']
+        q2 = self.pivoted(q1, 'RACE', 'STATUS', pivot_columns)
+        ordered_race = ['U.S. Nonresident',
+                        'Hispanic/Latino',
+                        'American Indian',
+                        'Asian',
+                        'Black or African American',
+                        'Hawaiian/Pacific Islander',
+                        'White',
+                        'Two or More Races',
+                        'Unknown'
+                        ]
+        return self.reordered(q2, 'RACE', ordered_race)
 
 
 

@@ -18,4 +18,11 @@ def index(request):
     return render(request, 'ipeds/base.html', context)
 
 def ftug(request):
-    return HttpResponse("<h1>Ftug</h1>")
+    S = Students('2024FA')
+    title = "Part A - Fall Enrollment for Full-Time Undergraduate Students"
+    df = sql_scripts.readSQL(S.x())
+    context = {
+        'title': title,
+        'df': df.to_html(classes='table table-striped table-hover', index=False)
+    }
+    return render(request, 'ipeds/base.html', context)
