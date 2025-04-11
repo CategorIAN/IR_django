@@ -109,7 +109,12 @@
     </div>
 
     <div class="content">
-      {{ df | safe }}
+        <h2>Men</h2>
+        {{ df_men | safe }}
+
+        <h2>Women</h2>
+        {{ df_women | safe }}
+
         {% block content %}
 
         {% endblock %}

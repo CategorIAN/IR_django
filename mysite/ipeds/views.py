@@ -20,9 +20,11 @@ def index(request):
 def ftug(request):
     S = Students('2024FA')
     title = "Part A - Fall Enrollment for Full-Time Undergraduate Students"
-    df = sql_scripts.readSQL(S.x())
+    df_men = sql_scripts.readSQL(S.x('M'))
+    df_women = sql_scripts.readSQL(S.x('F'))
     context = {
         'title': title,
-        'df': df.to_html(classes='table table-striped table-hover', index=False)
+        'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
+        'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
     }
     return render(request, 'ipeds/base.html', context)

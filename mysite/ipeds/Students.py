@@ -21,6 +21,68 @@ class Students:
         """
         return query
 
+    def assigned_gender(self):
+        query = """
+        SELECT PERSON.ID AS X,
+                COALESCE(GENDER, ASSIGNED_GENDER.Y) AS Y
+        FROM PERSON
+        LEFT JOIN (VALUES 
+                    (6189200, 'M'),
+                    (6189204, 'M'),
+                    (6189252, 'M'),
+                    (6186217, 'M'),
+                    (6190237, 'M'),
+                    (6190238, 'M'),
+                    (6190246, 'M'),
+                    (6189572, 'M'),
+                    (6189318, 'M'),
+                    (6189974, 'M'),
+                    (6189975, 'M'),
+                    (6189977, 'M'),
+                    (6187468, 'M'),
+                    (6189635, 'M'),
+                    (6190236, 'M'),
+                    (6189662, 'M'),
+                    (6189973, 'M'),
+        -----------------------------------------------------
+                    (6184697, 'F'),
+                    (6184977, 'F'),
+                    (6189250, 'F'),
+                    (6185039, 'F'),
+                    (6178065, 'F'),
+                    (6178068, 'F'),
+                    (6189523, 'F'),
+                    (6190232, 'F'),
+                    (6190233, 'F'),
+                    (6190235, 'F'),
+                    (6190242, 'F'),
+                    (6189571, 'F'),
+                    (6187470, 'F'),
+                    (6187467, 'F'),
+                    (6188541, 'F'),
+                    (6188544, 'F'),
+                    (6188940, 'F'),
+                    (6189317, 'F'),
+                    (6188731, 'F'),
+                    (6188797, 'F'),
+                    (6189969, 'F'),
+                    (6189970, 'F'),
+                    (6189971, 'F'),
+                    (6189972, 'F'),
+                    (6189978, 'F'),
+                    (6190240, 'F'),
+                    (6186670, 'F'),
+                    (6184447, 'F'),
+                    (6189976, 'F'),
+                    (6178066, 'F'),
+                    (6188264, 'F'),
+                    (6189575, 'F'),
+                    (6190234, 'F'),
+                    (6188723, 'F')
+                    ) AS ASSIGNED_GENDER(ID, Y) ON PERSON.ID = ASSIGNED_GENDER.ID
+        """
+        return query
+
     def race(self):
         query = """
         SELECT ID AS X,
@@ -107,12 +169,12 @@ class Students:
 
     def join_table_dict(self, feature):
         if feature == 'GENDER': return self.gender()
+        if feature == 'ASSIGNED_GENDER': return self.assigned_gender()
         if feature == 'RACE': return self.race()
         if feature == 'STATUS': return self.status()
         if feature == 'LOAD': return self.load()
         if feature == 'ACAD_LEVEL': return self.acad_level()
         if feature == 'CIP_CLASS': return self.cip_class()
-
 
     def table(self, features):
         query = f"""
@@ -159,9 +221,9 @@ class Students:
         """
         return query
 
-    def x(self):
-        table = self.table(['GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL'])
-        filter_by = {'GENDER': 'M', 'LOAD': 'Full-Time', 'ACAD_LEVEL': 'Undergraduate'}
+    def x(self, gender):
+        table = self.table(['ASSIGNED_GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL'])
+        filter_by = {'ASSIGNED_GENDER': gender, 'LOAD': 'Full-Time', 'ACAD_LEVEL': 'Undergraduate'}
         features = ['ID', 'RACE', 'STATUS']
         q1 = self.project(self.filtered(table, filter_by), features)
         pivot_columns = ['First-time', 'Transfer-in', 'Continuing/Returning', 'Non-Degree Seeking']
