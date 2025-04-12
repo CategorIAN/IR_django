@@ -65,14 +65,14 @@
     <a href="{% url 'ipeds:index' %}">Home</a>
         <!--Full-time undergraduates--------------------------------------------------------------------------------------->
         <a href = "{% url 'ipeds:ftug' %}">Full-time undergraduates</a>
-        <a href="#">13.0000 FT UG</a>
-        <a href="#">14.0000 FT UG</a>
-        <a href="#">26.0000 FT UG</a>
-        <a href="#">27.0000 FT UG</a>
-        <a href="#">40.0000 FT UG</a>
-        <a href="#">52.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '13' %}">13.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '14' %}">14.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '26' %}">26.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '27' %}">27.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '40' %}">40.0000 FT UG</a>
+        <a href="{% url 'ipeds:ftug_by_cip' '52' %}">52.0000 FT UG</a>
         <!--Part-time undergraduates--------------------------------------------------------------------------------------->
-        <a href="#">Part-time undergraduates</a>
+        <a href="{% url 'ipeds:ptug' %}">Part-time undergraduates</a>
         <a href="#">13.0000 PT UG</a>
         <a href="#">14.0000 PT UG</a>
         <a href="#">26.0000 PT UG</a>

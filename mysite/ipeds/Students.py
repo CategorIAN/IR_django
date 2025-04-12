@@ -146,12 +146,12 @@ class Students:
         query = f"""
         SELECT STUDENT_ID AS X,
                 CASE
-                    WHEN ACPG_CIP LIKE '13%' THEN 'Education'
-                    WHEN ACPG_CIP LIKE '14%' THEN 'Engineering'
-                    WHEN ACPG_CIP LIKE '26%' THEN 'Biological and Biomedical Sciences'
-                    WHEN ACPG_CIP LIKE '27%' THEN 'Mathematics and Statistics'
-                    WHEN ACPG_CIP LIKE '40%' THEN 'Physical Sciences'
-                    WHEN ACPG_CIP LIKE '52%' THEN 'Business, Management, Marketing and Related Support Services'
+                    WHEN ACPG_CIP LIKE '13%' THEN '13'
+                    WHEN ACPG_CIP LIKE '14%' THEN '14'
+                    WHEN ACPG_CIP LIKE '26%' THEN '26'
+                    WHEN ACPG_CIP LIKE '27%' THEN '27'
+                    WHEN ACPG_CIP LIKE '40%' THEN '40'
+                    WHEN ACPG_CIP LIKE '52%' THEN '52'
                 END AS Y
         FROM (
             SELECT * FROM (
@@ -221,9 +221,10 @@ class Students:
         """
         return query
 
-    def x(self, gender):
-        table = self.table(['ASSIGNED_GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL'])
-        filter_by = {'ASSIGNED_GENDER': gender, 'LOAD': 'Full-Time', 'ACAD_LEVEL': 'Undergraduate'}
+    def x(self, load, gender, cip = None):
+        table = self.table(['ASSIGNED_GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL', 'CIP_CLASS'])
+        by_cip = {} if cip is None else {'CIP_CLASS': cip}
+        filter_by = {'ASSIGNED_GENDER': gender, 'LOAD': load, 'ACAD_LEVEL': 'Undergraduate'} | by_cip
         features = ['ID', 'RACE', 'STATUS']
         q1 = self.project(self.filtered(table, filter_by), features)
         pivot_columns = ['First-time', 'Transfer-in', 'Continuing/Returning', 'Non-Degree Seeking']
