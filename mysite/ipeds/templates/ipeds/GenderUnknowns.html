@@ -1,0 +1,26 @@
+{% extends "ipeds/base.html" %}
+<html lang="en">
+{% block content %}
+<p>
+Is your institution able to report another gender for the Fall 2024 reporting period?
+If you indicate 'No, my institution is not able to report another gender,' leave the cells in the rows for 'Another gender' blank (i.e., do not report 0).
+If you indicate 'No, some cells will have a value of less than 5 students,' your institution collects data on another gender, but some cells have a value of less than 5 students, do not report the data and leave the cells in the rows for 'Another gender' blank.
+If you indicate 'Yes', but no students identified as another gender, please enter '0'.
+</p>
+
+<h3>Undergraduate students:</h3>
+<ul>
+    <li>No, my institution is not able to report another gender (do not report)</li>
+</ul>
+
+<h3>Graduate students:</h3>
+<ul>
+    <li>No, my institution is not able to report another gender (do not report)</li>
+</ul>
+
+Of the total students reported, how many students did you allocate to a binary gender category (Men/Women) because their
+gender was unknown or another gender than the provided categories?
+
+{{ df | safe }}
+{% endblock %}
+</html>

@@ -12,11 +12,11 @@ class Students:
         AND ENROLL_TERM = '{self.term}'
         """
         return query
-
+#==============================================================================================================================
     def gender(self):
         query = """
         SELECT ID AS X,
-               GENDER AS Y
+               COALESCE(GENDER, 'Unknown') AS Y
         FROM PERSON
         """
         return query
@@ -122,6 +122,30 @@ class Students:
         """
         return query
 
+    def degree_status(self):
+        query = f"""
+        SELECT DISTINCT STUDENT_ID AS X,
+                CASE
+                WHEN STP_ACAD_LEVEL = 'UG'
+                THEN CASE
+                WHEN STP_PROGRAM_TITLE = 'Non-Degree Seeking Students' THEN 'Non-Degree Seeking Undergraduate'
+                ELSE 'Degree Seeking Undergraduate' END
+                WHEN STP_ACAD_LEVEL = 'GR' THEN 'Graduate'
+                END AS Y
+        FROM (
+            SELECT * FROM (
+                SELECT STUDENT_ID,
+                        STP_PROGRAM_TITLE,
+                        STP_ACAD_LEVEL,
+                        ROW_NUMBER() OVER (PARTITION BY STUDENT_ID 
+                        ORDER BY CASE WHEN STP_END_DATE IS NULL THEN 0 ELSE 1 END, STP_END_DATE DESC) AS PROGRAM_RANK
+                FROM STUDENT_ACAD_PROGRAMS_VIEW
+                WHERE STP_START_DATE <= (SELECT TOP 1 TERMS.TERM_END_DATE FROM TERMS WHERE TERMS_ID = '{self.term}')
+            ) ranked
+        WHERE PROGRAM_RANK = 1) AS SAPV
+        """
+        return query
+
     def load(self):
         query = f"""
         SELECT DISTINCT STUDENT_ID AS X,
@@ -166,7 +190,7 @@ class Students:
         JOIN ACAD_PROGRAMS ON SAPV.STP_ACADEMIC_PROGRAM = ACAD_PROGRAMS_ID
         """
         return query
-
+#=======================================================================================================================
     def join_table_dict(self, feature):
         if feature == 'GENDER': return self.gender()
         if feature == 'ASSIGNED_GENDER': return self.assigned_gender()
@@ -175,6 +199,7 @@ class Students:
         if feature == 'LOAD': return self.load()
         if feature == 'ACAD_LEVEL': return self.acad_level()
         if feature == 'CIP_CLASS': return self.cip_class()
+        if feature == 'DEGREE_STATUS': return self.degree_status()
 
     def table(self, features):
         query = f"""
@@ -220,7 +245,7 @@ class Students:
         ORDER BY ORDERING.N
         """
         return query
-
+#=======================================================================================================================
     def x(self, load, gender, cip = None):
         table = self.table(['ASSIGNED_GENDER', 'RACE', 'STATUS', 'LOAD', 'ACAD_LEVEL', 'CIP_CLASS'])
         by_cip = {} if cip is None else {'CIP_CLASS': cip}
@@ -239,7 +264,8 @@ class Students:
                         'Two or More Races',
                         'Unknown'
                         ]
-        return self.reordered(q2, 'RACE', ordered_race)
+        q3 = self.reordered(q2, 'RACE', ordered_race)
+        return q3
 
     def y(self, gender, cip = None):
         table = self.table(['ASSIGNED_GENDER', 'RACE', 'LOAD', 'ACAD_LEVEL', 'CIP_CLASS'])
@@ -259,6 +285,21 @@ class Students:
                         'Two or More Races',
                         'Unknown'
                         ]
-        return self.reordered(q2, 'RACE', ordered_race)
+        q3 = self.reordered(q2, 'RACE', ordered_race)
+        return q3
+
+    def z(self):
+        table = self.table(['GENDER', 'ACAD_LEVEL'])
+        filter_by = {'GENDER': 'Unknown'}
+        features = ['ID', 'GENDER', 'ACAD_LEVEL']
+        q1 = self.project(self.filtered(table, filter_by), features)
+        pivot_columns = ['Undergraduate', 'Graduate']
+        q2 = self.pivoted(q1, 'GENDER', 'ACAD_LEVEL', pivot_columns)
+        return q2
+
+    def a(self):
+        table = self.table(['DEGREE_STATUS'])
+        return table
+
 
 

@@ -88,3 +88,18 @@ def graduates_by_cip(request, cip):
         'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
     }
     return render(request, 'ipeds/MenWomenPivots.html', context)
+
+def gender_unknowns(request):
+    S = Students('2024FA')
+    title = "Part A - Fall Enrollment - Gender Unknown or Another Gender than Provided Categories"
+    df = sql_scripts.readSQL(S.z())
+    context = {'title': title, 'df': df.to_html(classes='table table-striped table-hover', index=False)}
+    return render(request, 'ipeds/GenderUnknowns.html', context)
+
+def distance_education_status_1(request):
+    S = Students('2024FA')
+    title = "Part A - Fall Enrollment by Distance Education Status 1"
+    prompt = "My Prompt"
+    df = sql_scripts.readSQL(S.a())
+    context = {'title': title, 'prompt': prompt, 'df': df.to_html(classes='table table-striped table-hover', index=False)}
+    return render(request, 'ipeds/DistanceEducation.html', context)

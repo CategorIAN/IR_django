@@ -12,4 +12,6 @@ urlpatterns = [
     path("ptug/<cip>/", views.ptug_by_cip, name="ptug_by_cip"),
     path("graduates/", views.graduates, name="graduates"),
     path("graduates/<cip>/", views.graduates_by_cip, name="graduates_by_cip"),
+    path("gender_unknowns/", views.gender_unknowns, name="gender_unknowns"),
+    path("distance_education_status_1/", views.distance_education_status_1, name='distance_education_status_1'),
 ]
