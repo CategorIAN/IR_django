@@ -241,5 +241,24 @@ class Students:
                         ]
         return self.reordered(q2, 'RACE', ordered_race)
 
+    def y(self, gender, cip = None):
+        table = self.table(['ASSIGNED_GENDER', 'RACE', 'LOAD', 'ACAD_LEVEL', 'CIP_CLASS'])
+        by_cip = {} if cip is None else {'CIP_CLASS': cip}
+        filter_by = {'ASSIGNED_GENDER': gender, 'ACAD_LEVEL': 'Graduate'} | by_cip
+        features = ['ID', 'RACE', 'LOAD']
+        q1 = self.project(self.filtered(table, filter_by), features)
+        pivot_columns = ['Full-Time', 'Part-Time']
+        q2 = self.pivoted(q1, 'RACE', 'LOAD', pivot_columns)
+        ordered_race = ['U.S. Nonresident',
+                        'Hispanic/Latino',
+                        'American Indian',
+                        'Asian',
+                        'Black or African American',
+                        'Hawaiian/Pacific Islander',
+                        'White',
+                        'Two or More Races',
+                        'Unknown'
+                        ]
+        return self.reordered(q2, 'RACE', ordered_race)
 
 

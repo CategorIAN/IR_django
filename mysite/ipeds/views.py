@@ -15,7 +15,7 @@ def index(request):
         'title': title,
         'df': df.to_html(classes='table table-striped table-hover', index=False)
     }
-    return render(request, 'ipeds/base.html', context)
+    return render(request, 'ipeds/index.html', context)
 
 def ftug(request):
     S = Students('2024FA')
@@ -27,7 +27,7 @@ def ftug(request):
         'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
         'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
     }
-    return render(request, 'ipeds/base.html', context)
+    return render(request, 'ipeds/MenWomenPivots.html', context)
 
 def ftug_by_cip(request, cip):
     S = Students('2024FA')
@@ -39,8 +39,7 @@ def ftug_by_cip(request, cip):
         'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
         'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
     }
-    return render(request, 'ipeds/base.html', context)
-
+    return render(request, 'ipeds/MenWomenPivots.html', context)
 
 def ptug(request):
     S = Students('2024FA')
@@ -52,4 +51,40 @@ def ptug(request):
         'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
         'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
     }
-    return render(request, 'ipeds/base.html', context)
+    return render(request, 'ipeds/MenWomenPivots.html', context)
+
+def ptug_by_cip(request, cip):
+    S = Students('2024FA')
+    title = f"Part A - Fall Enrollment for Part-time Undergraduate Students: CIP CODE:{cip}.0000"
+    df_men = sql_scripts.readSQL(S.x('Part-Time', 'M', cip))
+    df_women = sql_scripts.readSQL(S.x('Part-Time', 'F', cip))
+    context = {
+        'title': title,
+        'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
+        'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
+    }
+    return render(request, 'ipeds/MenWomenPivots.html', context)
+
+def graduates(request):
+    S = Students('2024FA')
+    title = "Part A - Fall Enrollment for Graduate Students"
+    df_men = sql_scripts.readSQL(S.y('M'))
+    df_women = sql_scripts.readSQL(S.y('M'))
+    context = {
+        'title': title,
+        'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
+        'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
+    }
+    return render(request, 'ipeds/MenWomenPivots.html', context)
+
+def graduates_by_cip(request, cip):
+    S = Students('2024FA')
+    title = f"Part A - Fall Enrollment for Graduate Students: CIP CODE:{cip}.0000"
+    df_men = sql_scripts.readSQL(S.y('M', cip))
+    df_women = sql_scripts.readSQL(S.y('M', cip))
+    context = {
+        'title': title,
+        'df_men': df_men.to_html(classes='table table-striped table-hover', index=False),
+        'df_women': df_women.to_html(classes='table table-striped table-hover', index=False)
+    }
+    return render(request, 'ipeds/MenWomenPivots.html', context)
